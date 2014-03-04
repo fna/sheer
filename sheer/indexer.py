@@ -101,7 +101,7 @@ class PageIndexer(Indexer):
 
 class CustomIndexer(Indexer):
     def __init__(self, name, **kwargs):
-        self.name=name
+        self.name = name
         self.processor_name = kwargs['processor']
         del kwargs['processor']
         self.processor_module = importlib.import_module('sheer.processors.' + self.processor_name)
@@ -111,12 +111,12 @@ class CustomIndexer(Indexer):
         self.kwargs = kwargs
 
     def documents(self):
-        return self.processor_module.documents(self.name,**self.kwargs)
+        return self.processor_module.documents(self.name, **self.kwargs)
 
     def additional_mappings_path(self):
         if hasattr(self, 'mappings_path'):
             return self.mappings_path
-        return None
+        return ''
 
 
 def path_to_type_name(path):
@@ -128,7 +128,6 @@ def path_to_type_name(path):
 
 def index_args(args):
     index_location(args.location)
-
 
 
 def index_location(path):
@@ -179,6 +178,6 @@ def index_location(path):
                             mappings[key].update(additional_mappings[key])
                         else:
                             mappings[key] = additional_mappings[key]
-            es.indices.put_mapping(index='content', doc_type=indexer.name, body={indexer.name:mappings})
-            print "creating mapping for %s"  % (indexer.name )
+            es.indices.put_mapping(index='content', doc_type=indexer.name, body={indexer.name: mappings})
+            print "creating mapping for %s" % (indexer.name)
             indexer.index_documents_to(es)
