@@ -34,6 +34,9 @@ class Query(object):
     def search(self, **kwargs):
         query_dict = json.loads(file(self.filename).read())
         query_dict['index'] = self.es_index
+        if 'qargs' in kwargs:
+            kwargs.update(kwargs['qargs'])
+            del kwargs['qargs']
         query_dict.update(kwargs)
         if 'fields' not in query_dict:
             query_dict['fields'] = '*'

@@ -34,13 +34,13 @@ def scrub_name(name):
 
 class Site(object):
 
-    def __init__(self, path, permalink_map=None, elasticsearch_index=None):
+    def __init__(self, path, permalink_map=None, elasticsearch_index=None, query_string=None):
         cwd = os.getcwd()
         self.site_root = os.path.normpath(os.path.join(cwd, path))
         self.elasticsearch_index = elasticsearch_index
         self.directories = {}
         self.permalink_map = permalink_map
-
+        self.query_string = query_string
 
         for here, dirs, files in os.walk(self.site_root):
             filter_out_special_dirs(dirs)
@@ -209,6 +209,7 @@ class Directory(AncestryMixin):
     def context_for_request(self, request):
         context = {}
         context['queries'] = self.queryfinder_for_request(request)
+        context['args'] = self.site.query_string
         return context
 
     @memoized
@@ -253,7 +254,7 @@ class IndexableFile(IndexableMixin, AncestryMixin):
 
 
 def print_with_indent(indentlevel, text):
-    print ' ' * indentlevel,   text
+    print ' ' * indentlevel, text
 
 
 def print_directory_tree(directory, indentlevel=0):
